@@ -133,16 +133,37 @@ sys.stderr = sys.__stderr__
 export async function runWithTests(code, tests) {
   if (!pyodide) await initPyodide();
 
-  // No tests = can't pass
   if (!tests || tests.length === 0) {
     const { output, error, plotImage } = await runPython(code);
     return { output, error, plotImage, passed: false, testResults: [] };
   }
 
-  // Run user code to get output
+  // 1. Clean the global namespace EXACTLY ONCE before running any code
+  try {
+    await pyodide.runPythonAsync(`
+# Clean user-defined variables from a completely separate previous execution run
+_keep = {'__builtins__','__name__','__doc__','__package__','__spec__',
+         '__annotations__','__loader__','sys','io','os',
+         'numpy','np','pandas','pd','matplotlib','plt','base64',
+         '_capture_plot','_stdout_capture','_stderr_capture',
+         'csv','json','re','math','random','collections',
+         'itertools','functools','datetime','sqlite3'}
+for _k in list(globals().keys()):
+    if _k not in _keep and not _k.startswith('_'):
+        try:
+            del globals()[_k]
+        except:
+            pass
+del _keep
+`);
+  } catch (e) {
+    console.error("Namespace initialization failed:", e);
+  }
+
+  // 2. Run user code to capture output and set up variables globally
   const { output, error, plotImage } = await runPython(code);
 
-  // If code itself errors, mark all tests as failed
+  // If code itself has a syntax or runtime error, fail all tests immediately
   if (error) {
     const testResults = tests.map(t => ({
       name: t.name, passed: false,
@@ -153,6 +174,7 @@ export async function runWithTests(code, tests) {
 
   const testResults = [];
 
+  // 3. Evaluate assertions against the populated global state
   for (const test of tests) {
     if (!test.code || test.code.trim() === '') {
       testResults.push({ name: test.name, passed: false, error: 'No test assertion defined' });
@@ -160,35 +182,15 @@ export async function runWithTests(code, tests) {
     }
 
     try {
-      // Reset test result flags and clean user variables
       await pyodide.runPythonAsync(`
 _test_passed = False
 _test_error = ""
-# Clean user-defined variables from previous test run
-_keep = {'__builtins__','__name__','__doc__','__package__','__spec__',
-         '__annotations__','__loader__','sys','io','os',
-         'numpy','np','pandas','pd','matplotlib','plt','base64',
-         '_capture_plot','_stdout_capture','_stderr_capture',
-         'csv','json','re','math','random','collections',
-         'itertools','functools','datetime','sqlite3',
-         '_test_passed','_test_error','_keep'}
-for _k in list(globals().keys()):
-    if _k not in _keep and not _k.startswith('_'):
-        try:
-            del globals()[_k]
-        except:
-            pass
-del _keep
 `);
 
-      // Indent user code and test code to put inside try block
-      const indentedCode = code.split('\n').map(l => '    ' + l).join('\n');
       const indentedTest = test.code.split('\n').map(l => '    ' + l).join('\n');
 
-      // Wrap everything in Python try/except — Python itself determines pass/fail
-      const wrappedCode = [
+      const wrappedTest = [
         'try:',
-        indentedCode,
         indentedTest,
         '    _test_passed = True',
         '    _test_error = ""',
@@ -200,9 +202,8 @@ del _keep
         '    _test_error = type(_e).__name__ + ": " + str(_e)',
       ].join('\n');
 
-      await pyodide.runPythonAsync(wrappedCode);
+      await pyodide.runPythonAsync(wrappedTest);
 
-      // Read result directly from Python globals
       const passed = await pyodide.runPythonAsync('_test_passed');
       const testError = await pyodide.runPythonAsync('_test_error');
 
@@ -212,9 +213,7 @@ del _keep
         error: passed === true ? null : (testError || 'Test failed'),
       });
     } catch (e) {
-      // Even the wrapper crashed (e.g. syntax error in user code)
       const errMsg = e.message || String(e);
-      // Extract just the last line of the traceback for readability
       const lastLine = errMsg.split('\n').filter(l => l.trim()).pop() || errMsg;
       testResults.push({
         name: test.name,
