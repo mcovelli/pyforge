@@ -11,16 +11,18 @@ PyForge is organized into 18 rooms across 4 learning paths:
 - **Advanced Analytics** (rooms 11-14): business intelligence pipelines, machine learning foundations, interactive visualization, advanced Pandas
 - **Systems & Integration** (rooms 15-18): SQL with Python, systems automation, data integration/ETL, and a capstone project
 
-Each room includes lessons, hands-on coding exercises (run live in-browser and checked against test assertions), debugging scenarios, and a quiz. Rooms unlock progressively based on prerequisites.
+Each room includes lessons, hands-on coding exercises (run live in-browser and checked against test assertions), debugging scenarios, and a quiz. Rooms unlock progressively based on prerequisites. The hands-on coding exercises run inside a step-by-step guided layout to optimize rendering and simplify the user workflow.
+
+## Tech stack
 
 ## Tech stack
 
 - React 19 + Vite for the frontend
-- Pyodide (v0.27.5) for in-browser Python execution, with NumPy, Pandas, and Matplotlib preloaded
-- CodeMirror 6 with Python syntax highlighting for the code editor
+- Pyodide (v0.27.5) for local in-browser Python execution
+- Headless AGG rasterization for converting Matplotlib plots to inline Base64 data strings
+- CodeMirror 6 with Python syntax highlighting and isolated key instance bindings
 - Dexie (IndexedDB) for local progress storage, no backend required
-- Google Gemini (2.0 Flash, free tier) for an optional AI tutor that gives Socratic hints and post-quiz assessments
-- react-router-dom and marked for navigation and rendering lesson markdown
+- Google Gemini (2.0 Flash, free tier) for socratic hints and diagnostic assessment loops
 
 ## Local development
 
@@ -83,5 +85,5 @@ src/services/database.js     # IndexedDB (Dexie) schema and queries
 
 ## Notes
 
-- Plotly charts render as static images in this environment rather than fully interactive.
+- Matplotlib charts render as static images inside output canvas components rather than native interactive popups.
 - The capstone (room 18) requires completing rooms 11-14 first.
