@@ -4,7 +4,7 @@ import { runWithTests } from '../../services/pyodide.js';
 import { getHint, isAIAvailable } from '../../services/ai.js';
 import { saveExerciseAttempt } from '../../services/database.js';
 
-export default function CodeExercise({ exercise, roomProgressId, onComplete, initialPassed = false, initialCode }) {
+export default function CodeExercise({ exercise, roomProgressId, onComplete, onCodeChange, initialPassed = false, initialCode }) {
   const [code, setCode] = useState(initialCode || exercise.starterCode || '');
   const [output, setOutput] = useState('');
   const [error, setError] = useState(null);
@@ -55,6 +55,13 @@ export default function CodeExercise({ exercise, roomProgressId, onComplete, ini
     setHasRun(false);
   };
 
+  const handleEditorChange = (newCode) => {
+    setCode(newCode); // Keeps local editor input snappy
+    if (onCodeChange) {
+      onCodeChange(newCode); // Backs it up immediately into RoomView's dictionary state
+    }
+  };
+
   const handleHint = async () => {
     if (!isAIAvailable()) {
       setHints(prev => [...prev, { role: 'system', text: 'AI is unavailable. Check your API key in Settings or wait for daily limit reset.' }]);
@@ -97,7 +104,7 @@ export default function CodeExercise({ exercise, roomProgressId, onComplete, ini
           🤖 {hintLoading ? 'Thinking...' : 'Ask AI'}
         </button>
       </div>
-      <PythonEditor code={code} onChange={setCode} />
+      <PythonEditor code={code} onChange={handleEditorChange} />
 
       {/* Always show output panel after running */}
       {hasRun && (

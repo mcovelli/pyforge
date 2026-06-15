@@ -70,6 +70,13 @@ export default function RoomView({ roomId, userId, onComplete }) {
     setCompletedExercises(prev => new Set([...prev, exerciseId]));
   };
 
+  const handleCodeChange = (exerciseId, updatedCode) => {
+    setSavedCode(prev => ({
+      ...prev,
+      [exerciseId]: updatedCode
+    }));
+  };
+
   const handleQuizComplete = async (score) => {
     setQuizScore(score);
     if (score >= 70 && visitId) {
@@ -163,19 +170,20 @@ export default function RoomView({ roomId, userId, onComplete }) {
             </div>
 
             {/* Render ONLY the single active exercise item */}
-            {(() => {
-              const currentExercise = content.exercises[activeExerciseIdx];
-              return (
-                <CodeExercise
-                  key={currentExercise.id}
-                  exercise={currentExercise}
-                  roomProgressId={visitId}
-                  onComplete={handleExerciseComplete}
-                  initialPassed={completedExercises.has(currentExercise.id)}
-                  initialCode={savedCode[currentExercise.id]}
-                />
-              );
-            })()}
+              {(() => {
+                const currentExercise = content.exercises[activeExerciseIdx];
+                return (
+                  <CodeExercise
+                    key={currentExercise.id}
+                    exercise={currentExercise}
+                    roomProgressId={visitId}
+                    onComplete={handleExerciseComplete}
+                    onCodeChange={(newCode) => handleCodeChange(currentExercise.id, newCode)} // Add this line
+                    initialPassed={completedExercises.has(currentExercise.id)}
+                    initialCode={savedCode[currentExercise.id] || ''} // Ensure it falls back cleanly to an empty string
+                  />
+                );
+              })()}
 
             {/* Navigation Toolbar */}
             <div style={{ display: 'flex', justifyContent: 'space-between', marginTop: 24 }}>
