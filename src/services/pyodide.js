@@ -133,15 +133,15 @@ sys.stderr = sys.__stderr__
 export async function runWithTests(code, tests) {
   if (!pyodide) await initPyodide();
 
+  // No tests = can't pass
   if (!tests || tests.length === 0) {
     const { output, error, plotImage } = await runPython(code);
     return { output, error, plotImage, passed: false, testResults: [] };
   }
 
-  // 1. Clean the global namespace EXACTLY ONCE before running any code
+  // FIXED: Clean user-defined variables from PREVIOUS code submissions exactly ONCE before testing begins
   try {
     await pyodide.runPythonAsync(`
-# Clean user-defined variables from a completely separate previous execution run
 _keep = {'__builtins__','__name__','__doc__','__package__','__spec__',
          '__annotations__','__loader__','sys','io','os',
          'numpy','np','pandas','pd','matplotlib','plt','base64',
@@ -157,13 +157,13 @@ for _k in list(globals().keys()):
 del _keep
 `);
   } catch (e) {
-    console.error("Namespace initialization failed:", e);
+    console.error("Pre-test namespace cleanup failed:", e);
   }
 
-  // 2. Run user code to capture output and set up variables globally
+  // Run user code to get output
   const { output, error, plotImage } = await runPython(code);
 
-  // If code itself has a syntax or runtime error, fail all tests immediately
+  // If code itself errors, mark all tests as failed
   if (error) {
     const testResults = tests.map(t => ({
       name: t.name, passed: false,
@@ -174,7 +174,7 @@ del _keep
 
   const testResults = [];
 
-  // 3. Evaluate assertions against the populated global state
+  // Iterate safely through each unit test assertion
   for (const test of tests) {
     if (!test.code || test.code.trim() === '') {
       testResults.push({ name: test.name, passed: false, error: 'No test assertion defined' });
@@ -182,15 +182,20 @@ del _keep
     }
 
     try {
+      // Setup structural execution flags inside Python for this explicit test
       await pyodide.runPythonAsync(`
 _test_passed = False
 _test_error = ""
 `);
 
+      // Indent user code and test code to put inside try block
+      const indentedCode = code.split('\n').map(l => '    ' + l).join('\n');
       const indentedTest = test.code.split('\n').map(l => '    ' + l).join('\n');
 
-      const wrappedTest = [
+      // Wrap everything in Python try/except — Python itself determines pass/fail
+      const wrappedCode = [
         'try:',
+        indentedCode,
         indentedTest,
         '    _test_passed = True',
         '    _test_error = ""',
@@ -202,8 +207,9 @@ _test_error = ""
         '    _test_error = type(_e).__name__ + ": " + str(_e)',
       ].join('\n');
 
-      await pyodide.runPythonAsync(wrappedTest);
+      await pyodide.runPythonAsync(wrappedCode);
 
+      // Read result directly from Python globals
       const passed = await pyodide.runPythonAsync('_test_passed');
       const testError = await pyodide.runPythonAsync('_test_error');
 
