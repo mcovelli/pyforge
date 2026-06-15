@@ -19,6 +19,7 @@ export default function RoomView({ roomId, userId, onComplete }) {
   const [quizScore, setQuizScore] = useState(null);
   const [assessment, setAssessment] = useState(null);
   const [assessmentLoading, setAssessmentLoading] = useState(false);
+  const [activeExerciseIdx, setActiveExerciseIdx] = useState(0);
 
   const room = getRoomById(roomId);
   const path = getPathForRoom(roomId);
@@ -59,6 +60,7 @@ export default function RoomView({ roomId, userId, onComplete }) {
       }
       setActiveSection('lessons');
       setActiveLessonIdx(0);
+      setActiveExerciseIdx(0);
       setAssessment(null);
     };
     init();
@@ -145,15 +147,61 @@ export default function RoomView({ roomId, userId, onComplete }) {
           </div>
         )}
 
-        {activeSection === 'exercises' && content.exercises && (
+        {activeSection === 'exercises' && content.exercises && content.exercises.length > 0 && (
           <div>
-            {content.exercises.map(ex => (
-              <CodeExercise key={ex.id} exercise={ex} roomProgressId={visitId} onComplete={handleExerciseComplete} initialPassed={completedExercises.has(ex.id)} initialCode={savedCode[ex.id]} />
-            ))}
-            <div style={{ textAlign: 'center', marginTop: 24 }}>
-              <button className="btn btn-primary btn-lg" onClick={() => setActiveSection('quiz')}>
-                Proceed to Quiz →
+            {/* Step Indicators to show overall progress through the exercises */}
+            <div style={{ display: 'flex', gap: 8, marginBottom: 20, flexWrap: 'wrap' }}>
+              {content.exercises.map((ex, idx) => (
+                <button
+                  key={ex.id}
+                  className={`section-tab ${activeExerciseIdx === idx ? 'active' : ''} ${completedExercises.has(ex.id) ? 'passed' : ''}`}
+                  onClick={() => setActiveExerciseIdx(idx)}
+                >
+                  Exercise {idx + 1} {completedExercises.has(ex.id) ? '✓' : ''}
+                </button>
+              ))}
+            </div>
+
+            {/* Render ONLY the single active exercise item */}
+            {(() => {
+              const currentExercise = content.exercises[activeExerciseIdx];
+              return (
+                <CodeExercise
+                  key={currentExercise.id}
+                  exercise={currentExercise}
+                  roomProgressId={visitId}
+                  onComplete={handleExerciseComplete}
+                  initialPassed={completedExercises.has(currentExercise.id)}
+                  initialCode={savedCode[currentExercise.id]}
+                />
+              );
+            })()}
+
+            {/* Navigation Toolbar */}
+            <div style={{ display: 'flex', justifyContent: 'space-between', marginTop: 24 }}>
+              <button
+                className="btn btn-secondary"
+                onClick={() => setActiveExerciseIdx(Math.max(0, activeExerciseIdx - 1))}
+                disabled={activeExerciseIdx === 0}
+              >
+                ← Previous Exercise
               </button>
+
+              {activeExerciseIdx < content.exercises.length - 1 ? (
+                <button
+                  className="btn btn-primary"
+                  onClick={() => setActiveExerciseIdx(activeExerciseIdx + 1)}
+                >
+                  Next Exercise →
+                </button>
+              ) : (
+                <button
+                  className="btn btn-primary"
+                  onClick={() => setActiveSection('quiz')}
+                >
+                  Proceed to Quiz →
+                </button>
+              )}
             </div>
           </div>
         )}
