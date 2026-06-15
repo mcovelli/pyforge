@@ -1,0 +1,74 @@
+export const exercises = [
+  { id: 'ex1', title: 'Inventory Manager', description: 'Create a dictionary `inventory` mapping product names to dicts with "qty" and "price" keys. Products: "Laptop" (45, 999.99), "Mouse" (200, 24.99), "Monitor" (30, 349.99). Calculate `total_value` as sum of qty*price for all items.', starterCode: 'inventory = {\n\n}\n\ntotal_value = 0\n\n\nprint(f"Total inventory value: ${total_value:,.2f}")', tests: [
+    { name: 'Laptop exists', code: 'assert inventory["Laptop"]["qty"] == 45' },
+    { name: 'Laptop price', code: 'assert inventory["Laptop"]["price"] == 999.99' },
+    { name: 'Mouse exists', code: 'assert inventory["Mouse"]["qty"] == 200' },
+    { name: 'Total value', code: 'assert round(total_value, 2) == 60497.25' }
+  ]},
+  { id: 'ex2', title: 'Customer Retention Analysis', description: 'Given two sets of customer IDs, find: `retained` (in both months), `churned` (only in month1), `new_custs` (only in month2), and `total_unique` (count of all unique customers).', starterCode: 'month1 = {101, 102, 103, 104, 105, 106}\nmonth2 = {103, 104, 105, 107, 108, 109}\n\nretained = \nchurned = \nnew_custs = \ntotal_unique = \n\nprint(f"Retained: {retained}")\nprint(f"Churned: {churned}")\nprint(f"New: {new_custs}")\nprint(f"Total unique: {total_unique}")', tests: [
+    { name: 'Retained', code: 'assert retained == {103, 104, 105}' },
+    { name: 'Churned', code: 'assert churned == {101, 102, 106}' },
+    { name: 'New customers', code: 'assert new_custs == {107, 108, 109}' },
+    { name: 'Total unique', code: 'assert total_unique == 9' }
+  ]},
+  { id: 'ex3', title: 'Employee Data Processor', description: 'Given employee dicts, create: `high_earners` (list of names with salary >= 80000), `dept_count` (dict of dept -> employee count), `avg_salary` (average salary rounded to 2 decimals).', starterCode: 'employees = [\n    {"name": "Alice", "dept": "Analytics", "salary": 85000},\n    {"name": "Bob", "dept": "Sales", "salary": 72000},\n    {"name": "Carol", "dept": "Analytics", "salary": 92000},\n    {"name": "Dave", "dept": "Sales", "salary": 68000},\n    {"name": "Eve", "dept": "Engineering", "salary": 105000},\n]\n\nhigh_earners = \ndept_count = {}\navg_salary = \n\nprint(f"High earners: {high_earners}")\nprint(f"Departments: {dept_count}")\nprint(f"Average salary: ${avg_salary:,.2f}")', tests: [
+    { name: 'High earners', code: 'assert sorted(high_earners) == ["Alice", "Carol", "Eve"]' },
+    { name: 'Analytics count', code: 'assert dept_count["Analytics"] == 2' },
+    { name: 'Sales count', code: 'assert dept_count["Sales"] == 2' },
+    { name: 'Avg salary', code: 'assert avg_salary == 84400.00' }
+  ]},
+  { id: 'ex4', title: 'List Operations Drill', description: 'Given `numbers`, create: `squared` (each number squared), `evens` (only even numbers), `sorted_desc` (sorted descending). Also find `second_largest` value.', starterCode: 'numbers = [14, 7, 23, 8, 42, 15, 31, 3, 19, 26]\n\nsquared = \nevens = \nsorted_desc = \nsecond_largest = \n\nprint(f"Squared: {squared}")\nprint(f"Evens: {evens}")\nprint(f"Sorted desc: {sorted_desc}")\nprint(f"Second largest: {second_largest}")', tests: [
+    { name: 'Squared length', code: 'assert len(squared) == 10 and squared[0] == 196' },
+    { name: 'Evens correct', code: 'assert sorted(evens) == [8, 14, 26, 42]' },
+    { name: 'Sorted desc', code: 'assert sorted_desc == [42, 31, 26, 23, 19, 15, 14, 8, 7, 3]' },
+    { name: 'Second largest', code: 'assert second_largest == 31' }
+  ]},
+  { id: 'ex5', title: 'Word Frequency Counter', description: 'Count word frequencies in the text. Create `word_counts` dict mapping each lowercase word to its count. Find `most_common` (the word with highest count) and `unique_count` (number of unique words).', starterCode: 'text = "the quick brown fox jumps over the lazy dog the fox the dog"\nwords = text.lower().split()\n\nword_counts = {}\n\n\nmost_common = \nunique_count = \n\nprint(f"Counts: {word_counts}")\nprint(f"Most common: {most_common}")\nprint(f"Unique words: {unique_count}")', tests: [
+    { name: 'The count', code: 'assert word_counts["the"] == 4' },
+    { name: 'Fox count', code: 'assert word_counts["fox"] == 2' },
+    { name: 'Most common', code: 'assert most_common == "the"' },
+    { name: 'Unique count', code: 'assert unique_count == 8' }
+  ]},
+  { id: 'ex6', title: 'Tuple Records', description: 'Given student records as tuples (name, grade, gpa), create: `honor_roll` (names with gpa >= 3.5), `grade_groups` (dict mapping grade to list of names), `avg_gpa` (average GPA rounded to 2 decimals).', starterCode: 'students = [\n    ("Alice", "A", 3.9),\n    ("Bob", "B", 3.2),\n    ("Carol", "A", 3.7),\n    ("Dave", "C", 2.8),\n    ("Eve", "A", 3.5),\n    ("Frank", "B", 3.1)\n]\n\nhonor_roll = \ngrade_groups = {}\navg_gpa = \n\nprint(f"Honor roll: {honor_roll}")\nprint(f"Grade groups: {grade_groups}")\nprint(f"Average GPA: {avg_gpa}")', tests: [
+    { name: 'Honor roll', code: 'assert sorted(honor_roll) == ["Alice", "Carol", "Eve"]' },
+    { name: 'Grade A students', code: 'assert sorted(grade_groups["A"]) == ["Alice", "Carol", "Eve"]' },
+    { name: 'Grade B students', code: 'assert sorted(grade_groups["B"]) == ["Bob", "Frank"]' },
+    { name: 'Average GPA', code: 'assert avg_gpa == 3.37' }
+  ]},
+  { id: 'ex7', title: 'Dict Comprehension Builder', description: 'Create these using comprehensions: `celsius_to_f` (dict mapping temps [0,10,20,30,40] to Fahrenheit), `filtered_scores` (dict of name->score where score >= 70 from given data), `inverted` (swap keys and values of given dict).', starterCode: 'scores = {"Alice": 85, "Bob": 62, "Carol": 91, "Dave": 55, "Eve": 78}\ncolors = {"red": "#FF0000", "green": "#00FF00", "blue": "#0000FF"}\n\ncelsius_to_f = \nfiltered_scores = \ninverted = \n\nprint(f"Temps: {celsius_to_f}")\nprint(f"Passing: {filtered_scores}")\nprint(f"Inverted: {inverted}")', tests: [
+    { name: 'Celsius conversion', code: 'assert celsius_to_f[0] == 32.0 and celsius_to_f[100] == 212.0 if 100 in celsius_to_f else celsius_to_f[40] == 104.0' },
+    { name: 'Filtered count', code: 'assert len(filtered_scores) == 3' },
+    { name: 'Filtered content', code: 'assert "Bob" not in filtered_scores and "Dave" not in filtered_scores' },
+    { name: 'Inverted colors', code: 'assert inverted["#FF0000"] == "red"' }
+  ]},
+  { id: 'ex8', title: 'Shopping Cart System', description: 'Build a shopping cart. Create `cart` as a list of dicts with "item", "qty", "price". Add 3 items. Calculate `subtotal`, apply 8% tax to get `total`, and find the `most_expensive` item name.', starterCode: 'cart = []\n\n# Add items to cart\n\n\n\nsubtotal = \ntax_rate = 0.08\ntotal = \nmost_expensive = \n\nprint(f"Subtotal: ${subtotal:,.2f}")\nprint(f"Total with tax: ${total:,.2f}")\nprint(f"Most expensive: {most_expensive}")', tests: [
+    { name: 'Cart has 3 items', code: 'assert len(cart) == 3' },
+    { name: 'Items have keys', code: 'assert all("item" in c and "qty" in c and "price" in c for c in cart)' },
+    { name: 'Total includes tax', code: 'assert total == round(subtotal * 1.08, 2)' },
+    { name: 'Most expensive is string', code: 'assert isinstance(most_expensive, str) and len(most_expensive) > 0' }
+  ]}
+];
+
+export const scenarios = [
+  { id: 'sc1', title: 'Fix the Data Merger', description: 'Fix this code that merges two data sources.', buggyCode: 'online_sales = {"product_a": 150, "product_b": 200, "product_c": 75}\nstore_sales = {"product_b": 180, "product_c": 95, "product_d": 120}\n\ncombined = {}\nfor product, qty in online_sales:\n    combined[product] = qty\n\nfor product, qty in store_sales.items():\n    if product in combined:\n        combined[product] = combined[product] + qty\n    else\n        combined[product] = qty\n\nsorted_products = sorted(combined.items(), key=lambda x: x(1), reverse=True)\nprint(sorted_products)', solution: 'online_sales = {"product_a": 150, "product_b": 200, "product_c": 75}\nstore_sales = {"product_b": 180, "product_c": 95, "product_d": 120}\n\ncombined = {}\nfor product, qty in online_sales.items():\n    combined[product] = qty\n\nfor product, qty in store_sales.items():\n    if product in combined:\n        combined[product] = combined[product] + qty\n    else:\n        combined[product] = qty\n\nsorted_products = sorted(combined.items(), key=lambda x: x[1], reverse=True)\nprint(sorted_products)', hints: ['Dict iteration needs .items() to get key-value pairs', 'else clause needs a colon', 'Tuple access uses brackets x[1], not parentheses x(1)'] },
+  { id: 'sc2', title: 'Fix the List Processor', description: 'Fix this code that processes and deduplicates a list.', buggyCode: 'data = [5, 3, 8, 3, 1, 8, 5, 9, 1, 7]\n\n# Remove duplicates while keeping order\nseen = set()\nunique = []\nfor x in data:\n    if x not in seen:\n        unique.append(x)\n\n# Get top 3 values\nsorted_data = unique.sort(reverse=True)\ntop_3 = sorted_data[:3]\n\n# Create index lookup\nindex_map = {}\nfor i, val in enumerate(unique)\n    index_map[val] = i\n\nprint(f"Unique: {unique}")\nprint(f"Top 3: {top_3}")\nprint(f"Index map: {index_map}")', solution: 'data = [5, 3, 8, 3, 1, 8, 5, 9, 1, 7]\n\nseen = set()\nunique = []\nfor x in data:\n    if x not in seen:\n        seen.add(x)\n        unique.append(x)\n\nsorted_data = sorted(unique, reverse=True)\ntop_3 = sorted_data[:3]\n\nindex_map = {}\nfor i, val in enumerate(unique):\n    index_map[val] = i\n\nprint(f"Unique: {unique}")\nprint(f"Top 3: {top_3}")\nprint(f"Index map: {index_map}")', hints: ['Need to add x to seen set with seen.add(x)', '.sort() modifies in-place and returns None — use sorted() to get a new list', 'enumerate() line is missing a colon at the end'] },
+  { id: 'sc3', title: 'Fix the Nested Data Report', description: 'Fix this code that generates a summary from nested data.', buggyCode: 'departments = {\n    "Sales": {"employees": ["Alice", "Bob"], "budget": 500000},\n    "Engineering": {"employees": ["Carol", "Dave", "Eve"], "budget": 800000},\n    "Marketing": {"employees": ["Frank"], "budget": 300000}\n}\n\ntotal_employees = 0\ntotal_budget = 0\nlargest_dept = ""\nmax_size = 0\n\nfor dept in departments:\n    info = departments(dept)\n    size = len(info["employees"])\n    total_employees += size\n    total_budget += info["budget"]\n    if size > max_size:\n        max_size = size\n        largest_dept = dept\n\navg_budget = total_budget / len(departments.keys)\nprint(f"Total employees: {total_employees}")\nprint(f"Largest: {largest_dept} ({max_size})")\nprint(f"Avg budget: ${avg_budget:,.0f}")', solution: 'departments = {\n    "Sales": {"employees": ["Alice", "Bob"], "budget": 500000},\n    "Engineering": {"employees": ["Carol", "Dave", "Eve"], "budget": 800000},\n    "Marketing": {"employees": ["Frank"], "budget": 300000}\n}\n\ntotal_employees = 0\ntotal_budget = 0\nlargest_dept = ""\nmax_size = 0\n\nfor dept in departments:\n    info = departments[dept]\n    size = len(info["employees"])\n    total_employees += size\n    total_budget += info["budget"]\n    if size > max_size:\n        max_size = size\n        largest_dept = dept\n\navg_budget = total_budget / len(departments.keys())\nprint(f"Total employees: {total_employees}")\nprint(f"Largest: {largest_dept} ({max_size})")\nprint(f"Avg budget: ${avg_budget:,.0f}")', hints: ['Dictionary access uses brackets departments[dept], not parentheses departments(dept)', '.keys is a method that needs parentheses: .keys()'] }
+];
+
+export const quiz = [
+  { id: 'q1', type: 'code_output', question: 'What does this print?\n```python\nd = {"a": 1, "b": 2}\nprint(d.get("c", 0))\n```', options: ['None', '0', 'KeyError', 'c'], correct: 1 },
+  { id: 'q2', type: 'multiple_choice', question: 'Which data structure preserves insertion order and allows duplicates?', options: ['set', 'dict', 'list', 'frozenset'], correct: 2 },
+  { id: 'q3', type: 'code_output', question: 'What is the result?\n```python\na = {1, 2, 3}\nb = {2, 3, 4}\nprint(a & b)\n```', options: ['{1, 2, 3, 4}', '{2, 3}', '{1, 4}', 'Error'], correct: 1 },
+  { id: 'q4', type: 'scenario', question: 'You need to track unique visitor IPs to a website. Which data structure is most efficient?', options: ['List', 'Dictionary', 'Set', 'Tuple'], correct: 2 },
+  { id: 'q5', type: 'code_output', question: 'What happens?\n```python\nt = (1, 2, 3)\nt[0] = 10\n```', options: ['(10, 2, 3)', '(1, 2, 3)', 'TypeError', 'None'], correct: 2 },
+  { id: 'q6', type: 'multiple_choice', question: 'How do you safely access a dictionary key that might not exist?', options: ['dict[key]', 'dict.get(key, default)', 'dict.find(key)', 'dict.access(key)'], correct: 1 },
+  { id: 'q7', type: 'code_output', question: 'What does this return?\n```python\ndata = [1, 2, 3, 2, 1]\nprint(len(set(data)))\n```', options: ['5', '3', '2', 'Error'], correct: 1 },
+  { id: 'q8', type: 'scenario', question: 'You have employee records where each employee has a unique ID. Best structure to map IDs to records?', options: ['List of tuples', 'Set of IDs', 'Dictionary with ID keys', 'Nested lists'], correct: 2 },
+  { id: 'q9', type: 'code_output', question: 'What does this print?\n```python\nlst = [1, 2, 3]\nlst.append([4, 5])\nprint(len(lst))\n```', options: ['3', '4', '5', 'Error'], correct: 1 },
+  { id: 'q10', type: 'multiple_choice', question: 'What is the difference between .append() and .extend()?', options: ['They are the same', 'append adds one element, extend adds each element from an iterable', 'extend adds one element, append adds each from iterable', 'append returns a new list, extend modifies in place'], correct: 1 },
+  { id: 'q11', type: 'code_output', question: 'What does this print?\n```python\na = [1, 2, 3]\nb = a\nb.append(4)\nprint(a)\n```', options: ['[1, 2, 3]', '[1, 2, 3, 4]', '[4]', 'Error'], correct: 1 },
+  { id: 'q12', type: 'scenario', question: 'You need to find which customers bought BOTH product A and product B. Best approach?', options: ['Loop through both lists', 'Use set intersection', 'Sort and compare', 'Use a dictionary'], correct: 1 },
+  { id: 'q13', type: 'code_output', question: 'What does this produce?\n```python\nd = {x: x**2 for x in range(4)}\nprint(d)\n```', options: ['{0: 0, 1: 1, 2: 4, 3: 9}', '{1: 1, 2: 4, 3: 9}', '[0, 1, 4, 9]', 'Error'], correct: 0 },
+  { id: 'q14', type: 'multiple_choice', question: 'Why can tuples be used as dictionary keys but lists cannot?', options: ['Tuples are faster', 'Tuples are immutable (hashable), lists are mutable', 'Lists are too large', 'Python just does not allow it'], correct: 1 },
+  { id: 'q15', type: 'code_output', question: 'What does this print?\n```python\nresult = []\nfor k, v in {"a": 1, "b": 2}.items():\n    result.append(k + str(v))\nprint(result)\n```', options: ["['a1', 'b2']", "['a', 'b']", "[1, 2]", "Error"], correct: 0 }
+];
