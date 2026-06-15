@@ -2,7 +2,7 @@ import { useEffect, useRef } from 'react';
 import { EditorView, basicSetup } from 'codemirror';
 import { python } from '@codemirror/lang-python';
 import { oneDark } from '@codemirror/theme-one-dark';
-import { EditorState } from '@codemirror/state';
+import { EditorState, Transaction } from '@codemirror/state';
 
 export default function PythonEditor({ code, onChange, readOnly = false }) {
   const containerRef = useRef(null);
@@ -47,7 +47,9 @@ export default function PythonEditor({ code, onChange, readOnly = false }) {
       const currentDoc = viewRef.current.state.doc.toString();
       if (currentDoc !== code) {
         viewRef.current.dispatch({
-          changes: { from: 0, to: currentDoc.length, insert: code }
+          changes: { from: 0, to: currentDoc.length, insert: code },
+          // Instructs the layout engine to handle text coordinates smoothly
+          annotations: Transaction.userEvent.of('input')
         });
       }
     }
